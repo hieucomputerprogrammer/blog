@@ -21,6 +21,7 @@ import java.util.UUID;
 @Setter
 @EqualsAndHashCode
 public class BaseEntity {
+    // TODO: UUID generation in MySQL database not working.
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
