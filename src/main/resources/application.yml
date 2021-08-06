@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Tech Blog
+  banner:
+    location: classpath:banner/banner.txt
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/blog
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
