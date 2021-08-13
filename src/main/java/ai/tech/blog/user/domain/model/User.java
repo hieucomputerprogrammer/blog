@@ -12,7 +12,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Table(name = "user")
@@ -32,7 +31,7 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    public User(UUID id, Instant createdOn, Instant updatedOn, String username, String password, String email) {
+    public User(Long id, Instant createdOn, Instant updatedOn, String username, String password, String email) {
         super(id, createdOn, updatedOn);
         this.username = username;
         this.password = password;

@@ -15,7 +15,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Table(name = "post")
@@ -39,7 +38,7 @@ public class Post extends BaseEntity {
     @Column(name = "username")
     private String username;
 
-    public Post(UUID id, Instant createdOn, Instant updatedOn, String title, String content, String username) {
+    public Post(Long id, Instant createdOn, Instant updatedOn, String title, String content, String username) {
         super(id, createdOn, updatedOn);
         this.title = title;
         this.content = content;
