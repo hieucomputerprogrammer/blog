@@ -22,7 +22,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @ToString(callSuper = true)
 public class Post extends BaseEntity {
     @NotBlank
@@ -38,8 +37,9 @@ public class Post extends BaseEntity {
     @Column(name = "username")
     private String username;
 
-    public Post(Long id, Instant createdOn, Instant updatedOn, String title, String content, String username) {
-        super(id, createdOn, updatedOn);
+    @Builder
+    public Post(Long id, Instant createdAt, Instant updatedAt, String title, String content, String username) {
+        super(id, createdAt, updatedAt);
         this.title = title;
         this.content = content;
         this.username = username;

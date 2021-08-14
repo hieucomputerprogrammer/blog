@@ -1,5 +1,6 @@
 package ai.tech.blog.common.security.config;
 
+import ai.tech.blog.common.security.jwt.JwtAuthorizingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -30,6 +32,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Bean
+    public JwtAuthorizingFilter jwtAuthorizingFilterBean() {
+        return new JwtAuthorizingFilter();
+    }
+
     @Override
     protected void configure(final AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoderBean());
@@ -41,5 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated();
+
+        httpSecurity.addFilterBefore(jwtAuthorizingFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 }

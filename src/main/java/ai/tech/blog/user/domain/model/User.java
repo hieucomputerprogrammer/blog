@@ -19,7 +19,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @ToString(callSuper = true)
 public class User extends BaseEntity {
     @Column(name = "username")
@@ -31,6 +30,7 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
+    @Builder
     public User(Long id, Instant createdOn, Instant updatedOn, String username, String password, String email) {
         super(id, createdOn, updatedOn);
         this.username = username;
