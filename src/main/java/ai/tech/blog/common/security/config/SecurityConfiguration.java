@@ -1,21 +1,42 @@
 package ai.tech.blog.common.security.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfiguration(final UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
+    public PasswordEncoder passwordEncoderBean() {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Override
+    protected void configure(final AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoderBean());
+    }
+
+    @Override
+    protected void configure(final HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()

@@ -1,5 +1,6 @@
 package ai.tech.blog.user.application.controller;
 
+import ai.tech.blog.user.application.dto.SignInRequest;
 import ai.tech.blog.user.application.dto.SignUpRequest;
 import ai.tech.blog.user.domain.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,10 @@ public class AuthController {
     public ResponseEntity<Void> signUp(final @RequestBody SignUpRequest signUpRequest) {
         authService.signUp(signUpRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("sign-in")
+    public ResponseEntity<String> signIn(final @RequestBody SignInRequest signInRequest) {
+        return ResponseEntity.ok(authService.signIn(signInRequest));
     }
 }

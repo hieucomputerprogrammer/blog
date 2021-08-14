@@ -1,27 +1,60 @@
 package ai.tech.blog.user.domain.service;
 
+import ai.tech.blog.common.security.jwt.JwtProvider;
+import ai.tech.blog.user.application.dto.SignInRequest;
 import ai.tech.blog.user.application.dto.SignUpRequest;
 import ai.tech.blog.user.domain.model.User;
 import ai.tech.blog.user.domain.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private AuthenticationManager authenticationManager;
+    private JwtProvider jwtProvider;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public void setUserRepository(final UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(final PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Autowired
+    public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+    @Autowired
+    public void setJwtProvider(final JwtProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
+    }
+
     public void signUp(final SignUpRequest signUpRequest) {
-        User user = User.builder()
+        final User user = User.builder()
                 .username(signUpRequest.getUsername())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .email(signUpRequest.getEmail())
                 .build();
         userRepository.save(user);
+    }
+
+    public String signIn(final SignInRequest signInRequest) {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword())
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtProvider.generateJwt(authentication);
     }
 }
