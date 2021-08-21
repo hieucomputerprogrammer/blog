@@ -1,6 +1,7 @@
 package ai.tech.blog.user.domain.service;
 
 import ai.tech.blog.common.security.jwt.JwtProvider;
+import ai.tech.blog.user.application.dto.AuthenticationResponse;
 import ai.tech.blog.user.application.dto.SignInRequest;
 import ai.tech.blog.user.application.dto.SignUpRequest;
 import ai.tech.blog.user.domain.model.User;
@@ -51,13 +52,14 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public String signIn(final SignInRequest signInRequest) {
+    public AuthenticationResponse signIn(final SignInRequest signInRequest) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword())
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtProvider.generateJwt(authentication);
+        String jwt = jwtProvider.generateJwt(authentication);
+        return new AuthenticationResponse(jwt, signInRequest.getUsername());
     }
 
     public Optional<org.springframework.security.core.userdetails.User> getSignedInUser() {

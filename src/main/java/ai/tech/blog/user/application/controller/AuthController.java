@@ -1,5 +1,6 @@
 package ai.tech.blog.user.application.controller;
 
+import ai.tech.blog.user.application.dto.AuthenticationResponse;
 import ai.tech.blog.user.application.dto.SignInRequest;
 import ai.tech.blog.user.application.dto.SignUpRequest;
 import ai.tech.blog.user.domain.service.AuthService;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("sign-in")
-    public ResponseEntity<String> signIn(final @RequestBody SignInRequest signInRequest) {
+    public ResponseEntity<AuthenticationResponse> signIn(final @RequestBody SignInRequest signInRequest) {
         return ResponseEntity.ok(authService.signIn(signInRequest));
     }
 }
